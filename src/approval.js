@@ -33,13 +33,13 @@ export function checkApproved ([remoteConfig, comments, pr]) {
   const commenters = comments
     .filter((comment) => comment.user.login !== pr.user.login)
     .reduce((ret, comment) => {
-      if (config.approvalStrings.some((str) => comment.body.includes(str))) {
+      if (config.approvalStrings.some((str) => RegExp(str, 'g').test(comment.body))) {
         return {
           ...ret,
           [comment.user.id]: (ret[comment.user.id] || 0) + 1
         }
       }
-      if (config.disapprovalStrings.some((str) => comment.body.includes(str))) {
+      if (config.disapprovalStrings.some((str) => RegExp(str, 'g').test(comment.body))) {
         return {
           ...ret,
           [comment.user.id]: (ret[comment.user.id] || 0) - 1
